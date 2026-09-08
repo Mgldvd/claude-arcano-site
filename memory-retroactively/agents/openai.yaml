@@ -1,0 +1,4 @@
+interface:
+  display_name: "memory-retroactively"
+  short_description: "Reconstruct .memory/ from code and Git diffs"
+  default_prompt: "Use $memory-retroactively to reconstruct this existing repository's .memory/ knowledge bundle. Treat current code and historical Git diffs as primary evidence, not commit messages; inventory existing documentation first, ask before migrating maintained docs, mark inference as draft, and produce a small OKF v0.2 + minimal ADR knowledge set rather than one document per commit. This skill never rewrites commit history itself; if I separately want all reachable commit messages normalized afterward, point me at the commit-history-rewrite skill instead."

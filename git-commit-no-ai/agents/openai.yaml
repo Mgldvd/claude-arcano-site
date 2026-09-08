@@ -1,4 +1,0 @@
-interface:
-  display_name: "Git Commit (No AI Attribution)"
-  short_description: "Generate, commit, or push staged changes — never with AI/agent attribution"
-  default_prompt: "Use $git-commit-no-ai to generate a repository-compatible Conventional Commit message from staged changes, create a local commit when requested, and push only when I explicitly request it. Never add AI/agent attribution of any kind."

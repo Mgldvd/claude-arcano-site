@@ -1,4 +1,0 @@
-interface:
-  display_name: "Memory ADR"
-  short_description: "Set up numbered ADRs and a live STATUS.md file"
-  default_prompt: "Use $memory-adr to set up (or maintain) this project's memory: numbered Architecture Decision Records under memory/decisions/ and a single memory/STATUS.md for active work, wired into AGENTS.md or CLAUDE.md."

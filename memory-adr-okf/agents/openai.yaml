@@ -1,0 +1,4 @@
+interface:
+  display_name: "memory-adr-okf"
+  short_description: "Maintain lightweight project knowledge under .memory/"
+  default_prompt: "Use $memory-adr-okf to set up or maintain this repository's .memory/ bundle using OKF v0.2 conventions and minimal ADRs. Inspect existing documentation before creating or migrating knowledge, keep STATUS.md current, and update only documentation affected by the work."
