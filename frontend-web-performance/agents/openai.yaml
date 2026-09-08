@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Web Performance"
+  short_description: "Evidence-led frontend web performance audits"
+  default_prompt: "Use $frontend-web-performance to measure and prioritize performance issues on this page."

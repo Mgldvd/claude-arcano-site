@@ -1,0 +1,6 @@
+interface:
+  display_name: "Agentic Engineering Review Agent"
+  short_description: "Find actionable bugs in code changes"
+  default_prompt: "Use $agentic-engineering-review-agent to review the requested code changes and return actionable findings."
+policy:
+  allow_implicit_invocation: false

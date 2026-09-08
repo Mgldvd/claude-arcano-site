@@ -1,0 +1,4 @@
+interface:
+  display_name: "README Instructions"
+  short_description: "Write simple README instructions"
+  default_prompt: "Use $docs-readme-instructions to add clear step-by-step instructions to this README."

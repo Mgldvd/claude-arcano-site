@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agentic Engineering Structure Cleanup"
+  short_description: "Refactor working code without behavior changes"
+  default_prompt: "Use $agentic-engineering-structure-cleanup to simplify this working change while preserving its observable behavior."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pi Extension Creator"
+  short_description: "Create and modify Pi coding-agent extensions"
+  default_prompt: "Use $agent-extension-pi-creator to build this Pi extension."

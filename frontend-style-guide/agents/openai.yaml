@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend HTML and CSS Style Guide"
+  short_description: "Consistent HTML and stylesheet conventions"
+  default_prompt: "Use $frontend-style-guide to review and normalize this HTML and stylesheet code."

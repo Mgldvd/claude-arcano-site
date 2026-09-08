@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agentic Engineering Review Loop"
+  short_description: "Resolve review feedback in a bounded loop"
+  default_prompt: "Use $agentic-engineering-review-loop to verify and resolve this review feedback with a bounded fix-and-test loop."

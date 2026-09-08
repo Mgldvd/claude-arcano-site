@@ -1,0 +1,4 @@
+interface:
+  display_name: "Responsive Mobile First"
+  short_description: "Content-driven mobile-first responsive styling"
+  default_prompt: "Use $frontend-responsive-mobile-first to make this component responsive across content-driven breakpoints."

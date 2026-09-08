@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agentic Engineering Workflow"
+  short_description: "Run disciplined AI-assisted coding workflows"
+  default_prompt: "Use $agentic-engineering-workflow to plan and deliver this software change as a small, verified, reviewable slice."

@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Tampermonkey GUI Builder'
+  short_description: 'Build clean, modular userscripts with GUIs'
+  default_prompt: 'Use $tampermonkey-gui-builder to create a clean modular Tampermonkey GUI project with a one-command Mise setup.'

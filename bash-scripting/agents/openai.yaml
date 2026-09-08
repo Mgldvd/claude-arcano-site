@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bash Scripting"
+  short_description: "Create safe, testable Bash automation"
+  default_prompt: "Use $bash-scripting to create or review this Bash script with defensive validation and focused tests."

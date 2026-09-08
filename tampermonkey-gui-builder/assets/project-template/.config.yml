@@ -1,0 +1,5 @@
+# Application identity
+
+application:
+  name: GUI Application
+  id: gui-application

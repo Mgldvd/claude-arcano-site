@@ -1,0 +1,11 @@
+// ==UserScript==
+// @name         <NAME>
+// @description  <DESCRIPTION>
+// @namespace    <NAMESPACE>
+
+// @version      0.1
+// @match        <URL>
+
+// @grant        none
+// @run-at       document-idle
+// ==/UserScript==
