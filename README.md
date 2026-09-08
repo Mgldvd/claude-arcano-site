@@ -1,105 +1,111 @@
 # Skills Directory
 
-Índice de todos los skills disponibles en esta carpeta, con un tag de clasificación y el grupo de instalación recomendado.
+Index of every skill available in this folder, with a classification tag and the recommended install group.
 
-## Tabla completa
+## Full table
 
-| Folder | Skill Name | Tag | Grupo de instalación |
-|---|---|---|---|
-| agent-extension-pi-creator | agent-extension-pi-creator | `agent-extension` | D. Pi Extension Authoring ⚠️ |
-| agent-extension-plugin-creator | agent-extension-plugin-creator | `agent-extension` | C. Codex Extension/Skill Authoring |
-| agent-extension-skill-creator | agent-extension-skill-creator | `agent-extension` | C. Codex Extension/Skill Authoring |
-| agent-extension-skill-family-organizer | agent-extension-skill-family-organizer | `agent-extension` | C. Codex Extension/Skill Authoring |
-| agent-extension-skill-installer | agent-extension-skill-installer | `agent-extension` | C. Codex Extension/Skill Authoring |
-| agentic-engineering-review-agent | agentic-engineering-review-agent | `code-review` | B. Agentic Engineering Workflow |
-| agentic-engineering-review-loop | agentic-engineering-review-loop | `code-review` | B. Agentic Engineering Workflow |
-| agentic-engineering-source-context | agentic-engineering-source-context | `research` | B. Agentic Engineering Workflow |
-| agentic-engineering-structure-cleanup | agentic-engineering-structure-cleanup | `refactoring` | B. Agentic Engineering Workflow |
-| agentic-engineering-workflow | agentic-engineering-workflow | `workflow` | B. Agentic Engineering Workflow (orquestador) |
-| bash-scripting | bash-scripting | `shell` | Standalone |
-| better-cli | better-cli | `cli` | Standalone |
-| docs-readme-instructions | docs-readme-instructions | `docs` | G. Documentation & Memory ⚠️ |
-| frontend-bem-css | frontend-bem-css | `css` | A. Frontend Web Stack |
-| frontend-javascript-style-guide | frontend-javascript-style-guide | `javascript` | A. Frontend Web Stack |
-| frontend-nuxt | frontend-nuxt | `nuxt` | A. Frontend Web Stack |
-| frontend-responsive-mobile-first | frontend-responsive-mobile-first | `css` | A. Frontend Web Stack |
-| frontend-style-guide | frontend-style-guide | `html-css` | A. Frontend Web Stack (base) |
-| frontend-vue-style-guide | frontend-vue-style-guide | `vue` | A. Frontend Web Stack |
-| frontend-web-performance | frontend-web-performance | `performance` | A. Frontend Web Stack |
-| git-commit-no-ai | git-commit-no-ai | `git` | F. Git Commit & Attribution (fusionado ✅) |
-| go-cobra-wails-cli | go-cobra-wails-cli | `go` | Standalone |
-| imagegen | imagegen | `image-generation` | H. OpenAI Ecosystem |
-| linux-mint-engineer | linux-mint-engineer | `sysadmin` | Standalone |
-| memory-adr | memory-adr | `documentation` | G. Documentation & Memory |
-| openai-docs | openai-docs | `openai` | H. OpenAI Ecosystem |
-| pi-extension-creator | pi-extension-creator | `agent-extension` | D. Pi Extension Authoring ⚠️ |
-| playwright-cli | playwright-cli | `browser-automation` | Standalone |
-| readme-instructions | readme-instructions | `docs` | G. Documentation & Memory ⚠️ |
-| tampermonkey | tampermonkey | `userscript` | E. Userscript Development |
-| tampermonkey-gui-builder | tampermonkey-gui-builder | `userscript` | E. Userscript Development |
-| taskfile | taskfile | `automation` | Standalone |
+| Folder                                 | Skill Name                             | Tag                | Install Group                                  |
+| -------------------------------------- | -------------------------------------- | ------------------ | ---------------------------------------------- |
+| agent-extension-plugin-creator         | agent-extension-plugin-creator         | `agent-extension`  | C. Codex Extension/Skill Authoring             |
+| agent-extension-skill-creator          | agent-extension-skill-creator          | `agent-extension`  | C. Codex Extension/Skill Authoring             |
+| agent-extension-skill-family-organizer | agent-extension-skill-family-organizer | `agent-extension`  | C. Codex Extension/Skill Authoring             |
+| agent-extension-skill-installer        | agent-extension-skill-installer        | `agent-extension`  | C. Codex Extension/Skill Authoring             |
+| agentic-engineering-source-context     | agentic-engineering-source-context     | `research`         | B. Agentic Engineering Workflow                |
+| agentic-engineering-structure-cleanup  | agentic-engineering-structure-cleanup  | `refactoring`      | B. Agentic Engineering Workflow                |
+| agentic-engineering-workflow           | agentic-engineering-workflow           | `workflow`         | B. Agentic Engineering Workflow (orchestrator) |
+| frontend-bem-css                       | frontend-bem-css                       | `css`              | A. Frontend Web Stack                          |
+| frontend-javascript-style-guide        | frontend-javascript-style-guide        | `javascript`       | A. Frontend Web Stack                          |
+| frontend-nuxt                          | frontend-nuxt                          | `nuxt`             | A. Frontend Web Stack                          |
+| frontend-responsive-mobile-first       | frontend-responsive-mobile-first       | `css`              | A. Frontend Web Stack                          |
+| frontend-style-guide                   | frontend-style-guide                   | `html-css`         | A. Frontend Web Stack (base)                   |
+| frontend-vue-style-guide               | frontend-vue-style-guide               | `vue`              | A. Frontend Web Stack                          |
+| frontend-web-performance               | frontend-web-performance               | `performance`      | A. Frontend Web Stack                          |
+| imagegen                               | imagegen                               | `image-generation` | H. OpenAI Ecosystem                            |
+| linux-mint-engineer                    | linux-mint-engineer                    | `sysadmin`         | Standalone                                     |
+| memory-adr                             | memory-adr                             | `documentation`    | G. Documentation & Memory                      |
+| openai-docs                            | openai-docs                            | `openai`           | H. OpenAI Ecosystem                            |
 
-⚠️ = solapamiento/duplicado detectado, ver notas del grupo abajo. ✅ = ya fusionado en un solo skill.
+⚠️ = overlap/duplicate detected, see the group notes below. ✅ = already merged into one skill.
 
-## Grupos de instalación recomendados
+
+
+## Recommended install groups
 
 ### A. Frontend Web Stack
+
 `frontend-style-guide` (base) + `frontend-bem-css` + `frontend-responsive-mobile-first` + `frontend-javascript-style-guide` + `frontend-vue-style-guide` + `frontend-nuxt` + `frontend-web-performance`
 
-**Por qué juntos:** cada uno se declara explícitamente como "companion" de los demás en su propio SKILL.md (p. ej. `frontend-bem-css` dice "use `frontend-style-guide` para formato, `frontend-responsive-mobile-first` para responsive, `frontend-vue-style-guide` para Vue"). Instalar solo uno deja huecos que los otros están diseñados para cubrir.
-**Instala parcial si:** no usas Vue/Nuxt, puedes omitir `frontend-vue-style-guide` y `frontend-nuxt`. `frontend-web-performance` es opcional si no vas a auditar rendimiento.
+**Why together:** each one explicitly declares itself as a "companion" of the others in its own SKILL.md (e.g. `frontend-bem-css` says "use `frontend-style-guide` for formatting, `frontend-responsive-mobile-first` for responsive, `frontend-vue-style-guide` for Vue"). Installing only one leaves gaps the others are designed to cover.
+**Install partially if:** you don't use Vue/Nuxt, you can skip `frontend-vue-style-guide` and `frontend-nuxt`. `frontend-web-performance` is optional if you're not auditing performance.
 
 ### B. Agentic Engineering Workflow
-`agentic-engineering-workflow` (orquestador) + `agentic-engineering-source-context` + `agentic-engineering-structure-cleanup` + `agentic-engineering-review-agent` + `agentic-engineering-review-loop`
 
-**Por qué juntos:** `agentic-engineering-workflow` menciona explícitamente que coordina a los otros cuatro como "companion skills" en cada fase (contexto → implementación → cleanup → review). Es un pipeline completo de feature dev con agentes; instalar solo el orquestador sin los demás lo deja citando skills que no existen.
-**Instala parcial si:** solo necesitas el loop de revisión de PRs pequeños, basta con `agentic-engineering-review-agent` + `agentic-engineering-review-loop`.
+`agentic-engineering-workflow` (orchestrator) + `agentic-engineering-source-context` + `agentic-engineering-structure-cleanup` + `agentic-engineering-review-agent` + `agentic-engineering-review-loop`
+
+**Why together:** `agentic-engineering-workflow` explicitly says it coordinates the other four as "companion skills" at each phase (context → implementation → cleanup → review). It's a complete feature-dev pipeline with agents; installing only the orchestrator without the rest leaves it citing skills that don't exist.
+**Install partially if:** you only need the small-PR review loop — `agentic-engineering-review-agent` + `agentic-engineering-review-loop` is enough.
 
 ### C. Codex Extension/Skill Authoring
+
 `agent-extension-skill-creator` + `agent-extension-plugin-creator` + `agent-extension-skill-family-organizer` + `agent-extension-skill-installer`
 
-**Por qué juntos:** son las herramientas meta para crear, empaquetar, organizar e instalar skills/plugins de Codex. Si vas a mantener tu propia colección de skills (como esta carpeta), los cuatro cubren el ciclo completo: crear → organizar en familias → empaquetar como plugin → instalar desde un repo externo.
+**Why together:** these are the meta-tools for creating, packaging, organizing, and installing Codex skills/plugins. If you're going to maintain your own skill collection (like this folder), the four together cover the full cycle: create → organize into families → package as a plugin → install from an external repo.
 
-### D. Pi Extension Authoring ⚠️ (elige uno, no ambos)
+### D. Pi Extension Authoring ⚠️ (pick one, not both)
+
 `agent-extension-pi-creator` vs `pi-extension-creator`
 
-**Duplicado detectado:** ambos hacen lo mismo (crear extensiones del agente Pi: slash commands, tools, hooks). La única diferencia es que `agent-extension-pi-creator` permite instalación global además de local, mientras `pi-extension-creator` es solo project-local. Instalar los dos es redundante y puede generar confusión sobre cuál se activa. Recomendación: quédate con `agent-extension-pi-creator` (superset de funcionalidad) salvo que quieras forzar que nunca se toque configuración global.
+**Duplicate detected:** both do the same thing (create Pi agent extensions: slash commands, tools, hooks). The only difference is that `agent-extension-pi-creator` allows global installation in addition to local, while `pi-extension-creator` is project-local only. Installing both is redundant and can create confusion about which one activates. Recommendation: keep `agent-extension-pi-creator` (superset of functionality) unless you specifically want to guarantee global config is never touched.
 
 ### E. Userscript Development
+
 `tampermonkey` + `tampermonkey-gui-builder`
 
-**Por qué juntos:** `tampermonkey` cubre el ciclo general de desarrollo/debug/review de userscripts; `tampermonkey-gui-builder` es un patrón especializado para separar GUI (HTML/CSS/JS) del core y compilarlo en un solo archivo. Si tus userscripts nunca necesitan panel de settings/diálogos, `tampermonkey` solo basta.
+**Why together:** `tampermonkey` covers the general develop/debug/review cycle for userscripts; `tampermonkey-gui-builder` is a specialized pattern for separating GUI (HTML/CSS/JS) from the core and compiling it into a single file. If your userscripts never need a settings panel/dialogs, `tampermonkey` alone is enough.
 
-### F. Git Commit & Attribution ✅ Fusionado
-`git-commit-no-ai` (reemplaza a `git-commit` + `no-co-author`)
+### F. Git Commit & Attribution ✅ Merged
 
-**Qué se hizo:** ambos skills cubrían el mismo flujo end-to-end (generar mensaje → commitear → opcionalmente pushear, garantizando cero atribución de IA), así que se fusionaron en un solo skill `git-commit-no-ai` en vez de mantenerlos como dos instalaciones separadas y coordinadas a mano.
+`git-commit-no-ai` (replaces `git-commit` + `no-co-author`)
 
-**Qué incluye el skill fusionado:**
-- Todo el flujo de `git-commit` (Conventional Commits, modos Message/Commit/Push, inspección del repo, detección de secretos).
-- Las dos capas de `no-co-author`: la capa de comportamiento (instrucciones al agente) y la capa de enforcement infalible (`scripts/commit-msg`, hook de git que limpia cualquier trailer de IA antes de confirmar el commit, sin importar qué herramienta lo escribió).
-- `scripts/install.sh` y `scripts/verify.sh`, `reference/patterns.md` y `reference/clean-history.md`, y las plantillas por herramienta (`templates/CLAUDE.md.snippet`, `.cursorrules.snippet`, `copilot-instructions.snippet`).
-- La regla de "no atribución de IA" queda **reiterada en cada sección** del `SKILL.md` (setup, cada modo, build del mensaje, verificación de historial y el reporte final) en vez de aparecer una sola vez, para que sea imposible de pasar por alto en cualquier fase del flujo.
+**What was done:** both skills covered the same end-to-end flow (generate message → commit → optionally push, guaranteeing zero AI attribution), so they were merged into a single `git-commit-no-ai` skill instead of keeping them as two separate installs that had to be coordinated by hand.
 
-**Carpetas originales:** `git-commit/` y `no-co-author/` se dejaron intactas en disco (no se borraron sin confirmación); el skill activo a usar de aquí en adelante es `git-commit-no-ai/`.
+**What the merged skill includes:**
+
+- The full `git-commit` flow (Conventional Commits, Message/Commit/Push modes, repo inspection, secret detection).
+- Both layers from `no-co-author`: the behavioral layer (instructions to the agent) and the infallible enforcement layer (`scripts/commit-msg`, a git hook that strips any AI trailer before the commit is finalized, regardless of which tool wrote it).
+- `scripts/install.sh` and `scripts/verify.sh`, `reference/patterns.md` and `reference/clean-history.md`, and the per-tool templates (`templates/CLAUDE.md.snippet`, `.cursorrules.snippet`, `copilot-instructions.snippet`).
+- The "no AI attribution" rule is **repeated in every section** of the `SKILL.md` (setup, each mode, message building, history verification, and the final report) instead of appearing once, so it's impossible to miss at any phase of the flow.
+
+**Original folders:** `git-commit/` and `no-co-author/` were deleted after the merge was confirmed; the active skill going forward is `git-commit-no-ai/`.
 
 ### G. Documentation & Memory
-`readme-instructions` vs `docs-readme-instructions` ⚠️ (elige uno) + `memory-adr`
 
-**Duplicado detectado:** `readme-instructions` y `docs-readme-instructions` cubren lo mismo (escribir/actualizar README). `docs-readme-instructions` es más estricto — solo pasos en inglés, sin párrafos explicativos. `readme-instructions` permite algo más de estructura "GitHub-friendly". Instala solo el que se ajuste al estilo que prefieres; tenerlos ambos puede hacer que el agente dude cuál aplicar.
-**`memory-adr`** es complementario, no duplicado: cubre memoria de decisiones (ADRs) + estado activo del proyecto, no la documentación de uso. Tiene sentido junto a cualquiera de los dos anteriores si quieres tanto README para usuarios como memoria para el propio agente.
+`readme-instructions` vs `docs-readme-instructions` ⚠️ (pick one) + `memory-adr`
+
+**Duplicate detected:** `readme-instructions` and `docs-readme-instructions` cover the same thing (writing/updating a README). `docs-readme-instructions` is stricter — plain step-by-step English only, no explanatory paragraphs. `readme-instructions` allows a bit more "GitHub-friendly" structure. Install only the one that matches the style you prefer; keeping both can leave the agent unsure which one to apply.
+**`memory-adr`** is complementary, not a duplicate: it covers decision memory (ADRs) + active project state, not usage documentation. It makes sense alongside either of the two above if you want both a user-facing README and memory for the agent itself.
 
 ### H. OpenAI Ecosystem
+
 `openai-docs` + `imagegen`
 
-**Por qué juntos:** `imagegen` tiene un modo CLI de fallback que depende de `OPENAI_API_KEY` y modelos de OpenAI; `openai-docs` es la referencia autoritativa para esos mismos modelos/APIs. Si generas imágenes con el modo built-in únicamente (sin CLI/API), `openai-docs` es opcional.
+**Why together:** `imagegen` has a CLI fallback mode that depends on `OPENAI_API_KEY` and OpenAI models; `openai-docs` is the authoritative reference for those same models/APIs. If you only generate images through the built-in mode (no CLI/API), `openai-docs` is optional.
 
-### Standalone (instalar individualmente según necesidad)
-`bash-scripting`, `better-cli`, `taskfile`, `playwright-cli`, `go-cobra-wails-cli`, `linux-mint-engineer`
+### I. Go CLI Development
 
-Estos no declaran dependencias ni companions entre sí ni con el resto de la colección — cada uno resuelve un dominio autocontenido (scripting, diseño de CLIs, automatización de tareas, testing de browser, un stack específico Go+Wails, o soporte de sistema Linux Mint). Instálalos solo cuando el proyecto los necesite.
+`cli-go-cobra` + `cli-go-cobra-wails` (+ optionally `cli-better` as the design layer)
 
-## Notas generales
+**Why related (not duplicates):** `cli-go-cobra` covers the pure Cobra framework — scaffolding with `cobra-cli`, command shape, flags, args validators, completions — plus the Charm ecosystem (charm.land) for polishing the terminal: `fang` (styled help/usage/errors/version), `lipgloss` (custom styling), `huh` (interactive prompts/forms), and `log` (structured, leveled logging). All of it for any Go CLI that lives in the terminal. `cli-go-cobra-wails` assumes that same Cobra as a base and adds a Wails+Vue layer so specific commands (e.g. `config`) can open a native window. Use only `cli-go-cobra` for a terminal-only CLI (with or without Charm); add `cli-go-cobra-wails` only when the project also needs a GUI window for some subcommand — don't install the second one "just in case" if you're never going to open a window.
 
-- Los tags con más de un skill (`css`, `agent-extension`, `docs`, `git`, `userscript`) indican candidatos naturales a agruparse; los grupos arriba lo hacen explícito con el motivo real (companions declarados, mismo dominio, o duplicado).
-- Los ⚠️ marcan pares que probablemente no deberían coexistir tal cual — no por incompatibilidad técnica, sino porque cubren el mismo caso de uso con matices distintos, y tenerlos ambos activos puede hacer ambigua la selección de skill.
+**`cli-better` complements both, but isn't Go-specific — that's why it's listed separately, not merged into this group.** `cli-go-cobra`/`cli-go-cobra-wails` are the *implementation* layer (how a command looks in Go+Cobra code); `cli-better` is the *design/UX* layer, and it's explicit about staying language- and framework-agnostic ("preserve the user's chosen language and framework"): stdout/stderr separation, exit-code conventions, `NO_COLOR` and TTY detection, help-text structure, config precedence, flag-deprecation policy. None of that is covered by `cli-go-cobra` or `cli-go-cobra-wails`, and neither of those two dictates it either — they show you how to wire a `RunE` and a flag, not whether a given command should exist, be a flag, or be interactive. Pair `cli-better` with either Go skill when designing or reviewing a CLI's actual user-facing contract, not just its Cobra plumbing.
+
+### Standalone (install individually as needed)
+
+`bash-scripting`, `cli-better`, `taskfile`, `playwright-cli`, `linux-mint-engineer`
+
+Listed standalone because none of them requires another skill in this collection to be useful on its own — `cli-better` in particular is still worth installing even with zero Go skills present, since it applies to a CLI in any language. The rest solve self-contained domains (scripting, task automation, browser testing, or Linux Mint system support). Install each only when the project needs it — and see Group I above for how `cli-better` pairs with the Go CLI skills when both apply.
+
+## General notes
+
+- Tags shared by more than one skill (`css`, `agent-extension`, `docs`, `git`, `userscript`) point to natural grouping candidates; the groups above make the real reason explicit (declared companions, same domain, or duplicate).
+- ⚠️ marks pairs that probably shouldn't coexist as-is — not because of technical incompatibility, but because they cover the same use case with different nuances, and having both active can make skill selection ambiguous.

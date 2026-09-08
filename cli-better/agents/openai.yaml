@@ -1,4 +1,4 @@
 interface:
   display_name: "Better CLI"
   short_description: "Design and review humane, scriptable CLIs"
-  default_prompt: "Use $better-cli to design or review this command-line interface."
+  default_prompt: "Use $cli-better to design or review this command-line interface."

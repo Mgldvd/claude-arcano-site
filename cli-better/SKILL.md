@@ -1,5 +1,5 @@
 ---
-name: better-cli
+name: cli-better
 description: Design, implement, or review command-line interfaces for clear human use and dependable automation. Use for command structure, flags, help, output streams, errors, exit codes, configuration, compatibility, and CLI UX; not for terminal UI applications whose primary interface is an interactive full-screen display.
 ---
 

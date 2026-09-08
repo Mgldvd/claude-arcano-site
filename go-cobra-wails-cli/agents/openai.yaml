@@ -1,4 +1,0 @@
-interface:
-  display_name: "Go Cobra Wails CLI"
-  short_description: "Build CLI-first Go apps with optional Wails UI"
-  default_prompt: "Use $go-cobra-wails-cli to build or extend this CLI-first Go application with an on-demand Wails interface."

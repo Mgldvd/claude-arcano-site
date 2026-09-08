@@ -1,5 +1,5 @@
 ---
-name: go-cobra-wails-cli
+name: cli-go-cobra-wails
 description: Scaffold or extend hybrid Linux applications that run primarily as a CLI (Go + Cobra) and open a native GUI window (Wails + Vue 3 + TypeScript) only for specific commands like `config` or `setup`. Use this whenever the user asks to create a new Cobra CLI that also needs an optional graphical window, add a command to an existing Go/Cobra/Wails project, decide whether a new subcommand should be CLI or GUI, embed a Vue frontend into a single Go binary, or wire Go business logic so both the terminal and the GUI call the same code without duplication. Also use it when the user names the stack directly or asks for a single-file distribution build for a Linux CLI/GUI hybrid.
 ---
 
