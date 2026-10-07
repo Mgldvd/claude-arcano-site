@@ -1,6 +1,6 @@
 {
   "name": "theme-panel",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A side pane listing Claude Code's themes with the current one's colors; press one to switch. /theme-panel opens it.",
   "types": "./types/index.d.ts"
 }

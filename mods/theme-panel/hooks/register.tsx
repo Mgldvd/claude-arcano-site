@@ -1,23 +1,26 @@
 // Theme Panel: Claude Code's themes in a side pane, one press each.
-//   Claude Code repaints only for a theme picked in /theme or /config; a theme a plugin sets
-//   is saved for the next start. It does repaint at once when the custom theme in use changes
-//   on disk, so the pane keeps one of its own, "Theme Panel" (<config>/themes/theme-panel.json),
-//   drawn from a built-in theme: once that theme is picked in /theme, a press here rewrites
-//   its base and the whole interface follows. Until then a press saves the theme for the next
-//   start. /theme-panel opens or closes the pane; closed by hand, it stays closed.
+//   Lists the built-in themes and the custom ones in <config>/themes/, marks the one in use,
+//   and draws a strip of its colors. Claude Code repaints at once only through /theme, the
+//   `/config theme=<built-in>` shorthand, or an edit to the custom theme file in use (a plain
+//   $.config.set only saves the theme for the next start). So a built-in theme is set with the
+//   shorthand, and the pane keeps a theme of its own, "Theme Panel" (themes/theme-panel.json):
+//   once that one is picked in /theme, a press copies the chosen theme's colors into it and
+//   the interface follows, custom themes included. /theme-panel opens or closes the pane.
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-import type { Themes } from '../types'
+import type { Theme, Themes } from '../types'
 
 const PANE = 'theme-panel'
 const TITLE = 'Themes'
 const ACCENT = 'claude' // the theme's own accent, so the pane follows the theme it switches
 const KEY = 'theme' // the /config row
+const CUSTOM = 'custom:'
 const SLUG = 'theme-panel'
-const LIVE = `custom:${SLUG}` // the row's value while the pane's own theme is in use
-const THEME_NAME = 'Theme Panel' // as /theme lists it
+const PROXY = `${CUSTOM}${SLUG}` // the saved theme while the pane's own is in use
+const PROXY_NAME = 'Theme Panel'
 const BASES = ['dark', 'light', 'dark-daltonized', 'light-daltonized', 'dark-ansi', 'light-ansi'] // what a custom theme can be drawn from
+const WATCH_MS = 3000 // while open, a theme picked in /theme or a new theme file shows up this soon
 // Theme keys drawn as the current theme's swatches.
 const SWATCHES = ['claude', 'success', 'warning', 'error', 'suggestion', 'autoAccept', 'planMode', 'bashBorder', 'ide', 'permission']
 const NAMES: Record<string, string> = {
@@ -29,14 +32,14 @@ const NAMES: Record<string, string> = {
   'light-ansi': 'Light, terminal colors',
   auto: 'Auto, as the terminal',
 }
+const BUILT_IN = Object.keys(NAMES)
 
 // Held by the host, so the pane survives a hot reload of this file.
 const themes = atom({ plugin: 'theme-panel', key: 'themes' } as const, null as Themes | null)
 const pending = atom({ plugin: 'theme-panel', key: 'pending' } as const, null as string | null)
 const isOpen = atom({ plugin: 'theme-panel', key: 'isOpen' } as const, false)
 
-const WATCH_MS = 2000
-let watcher: { cancel: () => void } | undefined // rereads the theme until the pane's own is picked in /theme
+let watcher: { cancel: () => void } | undefined // rereads the themes while the pane is open
 
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
@@ -45,7 +48,7 @@ export const register: Register = on => {
     await update($, pending, (): string | null => null) // a reload mid-switch leaves nothing spinning
     watcher?.cancel() // a reload starts the module over
     watcher = undefined
-    void refresh($, true).catch(() => {})
+    void refresh($).catch(() => {})
     const isClosedByHand = (await $.store.get('isClosedByHand').catch(() => undefined)) === true
     if (!isClosedByHand) await open($).catch(() => {})
     return r
@@ -65,14 +68,16 @@ export const register: Register = on => {
     const r = await next(e)
     if (e.id !== PANE) return r
     await update($, isOpen, () => false)
+    watcher?.cancel()
+    watcher = undefined
     if (e.origin.kind !== 'unload') await $.store.set('isClosedByHand', true).catch(() => {}) // a reload is not the person closing it
     return r
   })
 
-  // The theme changed in /theme or /config: the pane follows (and learns when its own is picked).
+  // The theme changed through /config's menu: the pane follows.
   on('config.set', { key: KEY }, async ($, e, next) => {
     const r = await next(e)
-    if (!r.deny) await update($, themes, (t): Themes | null => (t ? { ...t, current: String(r.value), isLive: String(r.value) === LIVE } : t)).catch(() => {}) // only watching: never in the way
+    if (!r.deny) await update($, themes, (t): Themes | null => (t ? { ...t, current: String(r.value) } : t)).catch(() => {}) // only watching: never in the way
     return r
   })
 
@@ -81,8 +86,24 @@ export const register: Register = on => {
     const t = await read($, themes)
     const busy = await read($, pending)
     const width = Math.max(10, e.props.bodyColumns - 2)
-    const inUse = t ? (t.isLive ? t.base : t.current) : ''
-    const options = t ? (t.isLive ? t.options.filter(name => BASES.includes(name)) : t.options) : []
+    const current = t?.current ?? ''
+    const row = (theme: Theme) => {
+      const isCurrent = theme.value === current
+      return (
+        <Box key={`row:${theme.value}`} flexDirection="row" justifyContent="space-between">
+          <Button
+            key={`theme:${theme.value}`}
+            plain
+            dimColor={!isCurrent}
+            label={`${busy === theme.value ? '◌' : isCurrent ? '●' : '○'} ${theme.name}`}
+            onPress={() => {
+              if (!isCurrent && busy === null && t?.isLocked !== true) void switchTheme($, theme)
+            }}
+          />
+          {isCurrent && <Text color="success">in use</Text>}
+        </Box>
+      )
+    }
 
     return (
       <Box flexDirection="column" paddingX={1}>
@@ -92,39 +113,29 @@ export const register: Register = on => {
             <Text bold>{TITLE}</Text>
           </Text>
           <Text dimColor wrap="truncate-start">
-            {inUse ? pretty(inUse) : ''}
+            {t ? nameOf(t, current) : ''}
           </Text>
         </Box>
         <Text dimColor>{'─'.repeat(width)}</Text>
-        {!t && <Text dimColor>Reading the theme…</Text>}
+        {!t && <Text dimColor>Reading the themes…</Text>}
         {t?.isLocked && <Text color="warning">Your organization sets the theme</Text>}
-        {t && !t.isLive && !t.isLocked && (
+        {t && t.custom.length > 0 && (
           <Box flexDirection="column" marginBottom={1}>
-            <Text color="warning" wrap="wrap">
-              {`To switch at once, pick “${THEME_NAME}” in /theme one time. Until then a press saves the theme for the next start.`}
-            </Text>
-            <Button key="setup" plain label="▸ Open /theme" onPress={() => void setUp($)} />
+            <Text dimColor>Custom</Text>
+            {t.custom.map(row)}
+            {!t.isProxy && (
+              <Text color="warning" wrap="wrap">
+                {`The first one opens /theme: pick “${PROXY_NAME}” there once, then every press switches at once`}
+              </Text>
+            )}
           </Box>
         )}
-        <Box flexDirection="column">
-          {options.map(name => {
-            const isCurrent = name === inUse
-            return (
-              <Box key={`row:${name}`} flexDirection="row" justifyContent="space-between">
-                <Button
-                  key={`theme:${name}`}
-                  plain
-                  dimColor={!isCurrent}
-                  label={`${busy === name ? '◌' : isCurrent ? '●' : '○'} ${pretty(name)}`}
-                  onPress={() => {
-                    if (!isCurrent && busy === null && t?.isLocked !== true) void switchTheme($, name)
-                  }}
-                />
-                {isCurrent && <Text color="success">in use</Text>}
-              </Box>
-            )
-          })}
-        </Box>
+        {t && (
+          <Box flexDirection="column">
+            <Text dimColor>Built in</Text>
+            {t.builtIn.map(row)}
+          </Box>
+        )}
         <Box marginTop={1} flexDirection="column">
           <Text dimColor>Colors of this theme</Text>
           <Text wrap="truncate-end">
@@ -138,7 +149,7 @@ export const register: Register = on => {
         <Box marginTop={1} flexDirection="row" justifyContent="space-between">
           <Text dimColor wrap="truncate-end">
             <Text color={ACCENT}>{'● '}</Text>
-            {t?.isLive ? 'press a theme: it applies at once' : 'press a theme to switch'}
+            {'press a theme to switch'}
           </Text>
           <Button key="reload" plain dimColor label="↻" onPress={() => void refresh($).catch(() => {})} />
         </Box>
@@ -147,89 +158,123 @@ export const register: Register = on => {
   })
 }
 
-export function pretty(name: string) {
-  if (name === LIVE) return THEME_NAME
-  return NAMES[name] ?? name.replace(/^custom:/, '').replace(/[-_]+/g, ' ').replace(/^\w/, c => c.toUpperCase())
+export function pretty(value: string) {
+  return NAMES[value] ?? value.replace(/^custom:/, '').replace(/[-_]+/g, ' ').replace(/^\w/, c => c.toUpperCase())
+}
+
+function nameOf(t: Themes, value: string) {
+  return [...t.custom, ...t.builtIn].find(theme => theme.value === value)?.name ?? pretty(value)
 }
 
 async function open($: EngineInterface, isAsked = false) {
   await $.ui.open(isAsked ? { id: PANE, title: TITLE, focus: true, columns: 36 } : { id: PANE, title: TITLE, columns: 36 })
   await update($, isOpen, () => true)
   if (isAsked) await $.store.set('isClosedByHand', false).catch(() => {})
+  watcher ??= $.clock.every(WATCH_MS, () => void refresh($).catch(() => {}))
 }
 
 async function configDir($: EngineInterface) {
   return (await $.env.get('CLAUDE_CONFIG_DIR')) ?? `${(await $.env.get('HOME')) ?? ''}/.claude`
 }
 
-// The pane's custom theme file, beside the person's other custom themes.
-async function themeFile($: EngineInterface) {
-  return `${await configDir($)}/themes/${SLUG}.json`
+function parse(text: string): Record<string, unknown> | undefined {
+  try {
+    const value = JSON.parse(text) as unknown
+    return typeof value === 'object' && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : undefined
+  } catch {
+    return undefined
+  }
 }
 
-// The theme saved in the person's settings: what /theme writes when they pick one.
+// The theme saved in the person's settings: what /theme and /config write.
 async function savedTheme($: EngineInterface): Promise<string | undefined> {
   const text = await $.fs.read(`${await configDir($)}/settings.json`).catch(() => undefined)
-  if (text === undefined) return undefined
-  try {
-    const theme = (JSON.parse(text) as { theme?: unknown }).theme
-    return typeof theme === 'string' ? theme : undefined
-  } catch {
-    return undefined
+  const theme = text === undefined ? undefined : parse(text)?.theme
+  return typeof theme === 'string' ? theme : undefined
+}
+
+// The custom themes Claude Code loads: <config>/themes/<slug>.json, each with a name.
+async function customThemes($: EngineInterface): Promise<Theme[]> {
+  const dir = `${await configDir($)}/themes`
+  const entries = await $.fs.list(dir).catch(() => [])
+  const found: Theme[] = []
+  for (const entry of entries) {
+    if (!entry.name.endsWith('.json') || entry.kind === 'dir') continue
+    const slug = entry.name.slice(0, -'.json'.length)
+    if (slug === SLUG) continue // the pane's own, which stands in for the others
+    const text = await $.fs.read(`${dir}/${entry.name}`).catch(() => undefined)
+    const file = text === undefined ? undefined : parse(text)
+    if (!file) continue
+    found.push({ value: `${CUSTOM}${slug}`, name: typeof file.name === 'string' && file.name.trim() !== '' ? file.name : pretty(slug) })
   }
+  return found.sort((a, b) => a.name.localeCompare(b.name))
 }
 
-async function readBase($: EngineInterface): Promise<string | undefined> {
-  const text = await $.fs.read(await themeFile($)).catch(() => undefined)
-  if (text === undefined) return undefined
-  try {
-    const base = (JSON.parse(text) as { base?: unknown }).base
-    return typeof base === 'string' && BASES.includes(base) ? base : undefined
-  } catch {
-    return undefined
-  }
-}
-
-async function writeBase($: EngineInterface, base: string) {
-  await $.fs.write(await themeFile($), `${JSON.stringify({ name: THEME_NAME, base, overrides: {} }, null, 2)}\n`)
-}
-
-// The theme row as /config lists it, and the pane's own theme. On the first read, the pane's
-// theme file is written when missing (drawn from the theme in use), so /theme lists it.
-async function refresh($: EngineInterface, isFirst = false) {
+async function refresh($: EngineInterface) {
   const row = (await $.config.list()).find(r => r.key === KEY)
-  const current = row ? String(row.value) : ''
-  let base = await readBase($)
-  if (base === undefined && isFirst) {
-    base = BASES.includes(current) ? current : 'dark'
-    await writeBase($, base).catch(() => {})
+  const options = row?.kind === 'choice' && row.options ? row.options.filter(o => !o.startsWith(CUSTOM)) : BUILT_IN
+  const saved = (await savedTheme($)) ?? (row ? String(row.value) : '')
+  const proxy = saved === PROXY ? await readTheme($, SLUG) : undefined
+  const found: Themes = {
+    current: proxy && typeof proxy.source === 'string' ? proxy.source : saved,
+    isProxy: saved === PROXY,
+    builtIn: options.map(value => ({ value, name: pretty(value) })),
+    custom: await customThemes($),
+    isLocked: row?.isLocked === true,
   }
-  const options = row?.kind === 'choice' && row.options ? row.options.filter(o => !o.startsWith('custom:')) : BASES
-  const isLive = current === LIVE || (await savedTheme($)) === LIVE
-  const found: Themes = { current, options: [...options], isLocked: row?.isLocked === true, isLive, base: base ?? 'dark' }
-  await update($, themes, (): Themes | null => found)
-  // Not live yet: keep looking, since picking a theme in /theme raises no event a plugin sees.
-  if (!isLive && !watcher) watcher = $.clock.every(WATCH_MS, () => void refresh($).catch(() => {}))
-  if (isLive && watcher) {
-    watcher.cancel()
-    watcher = undefined
-  }
+  const before = await read($, themes)
+  if (JSON.stringify(before) !== JSON.stringify(found)) await update($, themes, (): Themes | null => found)
 }
 
-// While the pane's theme is in use, a press rewrites its base and Claude Code repaints at
-// once. Otherwise the theme is saved as /config would, for the next start (and the pane's
-// theme follows, so picking it in /theme later keeps this choice).
-async function switchTheme($: EngineInterface, name: string) {
+async function readTheme($: EngineInterface, slug: string) {
+  const text = await $.fs.read(`${await configDir($)}/themes/${slug}.json`).catch(() => undefined)
+  return text === undefined ? undefined : parse(text)
+}
+
+// The pane's own theme, drawn as `theme`: a built-in one by its name, a custom one by its colors.
+async function writeProxy($: EngineInterface, theme: Theme) {
+  const custom = theme.value.startsWith(CUSTOM) ? await readTheme($, theme.value.slice(CUSTOM.length)) : undefined
+  const base = custom ? (typeof custom.base === 'string' && BASES.includes(custom.base) ? custom.base : 'dark') : theme.value
+  const overrides = custom && typeof custom.overrides === 'object' && custom.overrides !== null ? custom.overrides : {}
+  const file = { name: `${PROXY_NAME} · ${theme.name}`, base, overrides, source: theme.value }
+  await $.fs.write(`${await configDir($)}/themes/${SLUG}.json`, `${JSON.stringify(file, null, 2)}\n`)
+}
+
+// With the pane's own theme in use, any theme but Auto is a copy into its file: the interface
+// repaints at once. Otherwise a built-in theme goes through `/config theme=`, which repaints
+// too, and a custom one is copied in and /theme opens, where "Theme Panel" is picked once.
+async function switchTheme($: EngineInterface, theme: Theme) {
   const t = await read($, themes)
-  await update($, pending, (): string | null => name)
+  await update($, pending, (): string | null => theme.value)
   try {
-    if (BASES.includes(name)) await writeBase($, name)
-    if (t?.isLive && BASES.includes(name)) {
-      $.ui.toast(`Theme: ${pretty(name)}`)
+    const isCustom = theme.value.startsWith(CUSTOM)
+    if (t?.isProxy && theme.value !== 'auto') {
+      await writeProxy($, theme)
+      $.ui.toast(`Theme: ${theme.name}`)
+    } else if (!isCustom) {
+      const said = await $.command
+        .run({ command: 'config', args: `${KEY}=${theme.value}` })
+        .then(r => r.text ?? '')
+        .catch(() => undefined)
+      if (said === undefined) {
+        const r = await $.config.set({ key: KEY, value: theme.value })
+        if (r.deny !== undefined) throw new Error(r.deny)
+        $.ui.toast(`${theme.name} is saved: it shows from the next start`)
+      } else if (said !== '' && !/^Set /.test(said)) {
+        throw new Error(said.split('\n')[0]!)
+      } else {
+        $.ui.toast(`Theme: ${theme.name}`)
+      }
     } else {
-      const r = await $.config.set({ key: KEY, value: name })
-      if (r.deny !== undefined) throw new Error(r.deny)
-      $.ui.toast(`${pretty(name)} is saved for the next start. To switch at once, pick “${THEME_NAME}” in /theme`)
+      await writeProxy($, theme)
+      const isOpened = await $.command
+        .run({ command: 'theme', args: '' })
+        .then(() => true)
+        .catch(() => false)
+      $.ui.toast(
+        `${isOpened ? 'In /theme' : 'Type /theme and'} pick “${PROXY_NAME} · ${theme.name}” once: from then on every press here switches at once`,
+        { timeoutMs: 10_000 },
+      )
     }
   } catch (error) {
     $.ui.toast(`Could not switch the theme: ${error instanceof Error ? error.message : String(error)}`)
@@ -237,15 +282,4 @@ async function switchTheme($: EngineInterface, name: string) {
     await update($, pending, (): string | null => null)
   }
   await refresh($).catch(() => {})
-}
-
-// Opens /theme, where the person picks the pane's own theme once.
-async function setUp($: EngineInterface) {
-  const t = await read($, themes)
-  if ((await readBase($)) === undefined) await writeBase($, t && BASES.includes(t.current) ? t.current : 'dark').catch(() => {})
-  const isOpened = await $.command
-    .run({ command: 'theme', args: '' })
-    .then(() => true)
-    .catch(() => false)
-  $.ui.toast(isOpened ? `Pick “${THEME_NAME}” in the list` : `Type /theme and pick “${THEME_NAME}”`)
 }

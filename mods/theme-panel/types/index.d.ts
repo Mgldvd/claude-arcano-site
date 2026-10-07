@@ -1,10 +1,16 @@
-// The theme as this session has it, and the pane's own custom theme.
+// One theme the pane offers.
+export type Theme = {
+  value: string // what /config theme= takes: a built-in name, or `custom:<slug>`
+  name: string // as the pane shows it
+}
+
+// The themes this session can switch to, and the one saved now.
 export type Themes = {
-  current: string // the /config theme row's value: a built-in theme, or `custom:<slug>`
-  options: string[] // the built-in themes, in the menu's order
+  current: string // the theme shown now, in /config's spelling (the one the pane's own copies, while in use)
+  isProxy: boolean // the pane's own theme is in use: a press repaints through its file
+  builtIn: Theme[]
+  custom: Theme[] // <config>/themes/*.json
   isLocked: boolean // a trusted source owns it: shown, not changed
-  isLive: boolean // the session draws the pane's own custom theme, so a press repaints at once
-  base: string // the built-in theme that custom theme is drawn from
 }
 
 declare module 'claude-code' {
