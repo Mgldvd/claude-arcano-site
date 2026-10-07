@@ -1,0 +1,6 @@
+{
+  "name": "files-panel",
+  "version": "0.1.0",
+  "description": "A side pane with the project's files as an editor's tree. Tick files or folders and the chat gets them as context with your next message. /files-panel opens it.",
+  "types": "./types/index.d.ts"
+}

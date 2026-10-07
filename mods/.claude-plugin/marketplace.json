@@ -1,0 +1,43 @@
+{
+  "name": "claude-mods",
+  "owner": {
+    "name": "uu"
+  },
+  "plugins": [
+    {
+      "name": "context-bar",
+      "source": "./context-bar",
+      "description": "A band above the prompt with the context window's usage"
+    },
+    {
+      "name": "skills-panel",
+      "source": "./skills-panel",
+      "description": "A side pane listing the session's skills, with on/off switches"
+    },
+    {
+      "name": "files-panel",
+      "source": "./files-panel",
+      "description": "A side pane with the project's files as a tree; ticked files go to the chat as context"
+    },
+    {
+      "name": "model-switch",
+      "source": "./model-switch",
+      "description": "Bottom-right buttons that cycle the model and the effort with one click"
+    },
+    {
+      "name": "clean-view",
+      "source": "./clean-view",
+      "description": "A calm view for non-technical people: technical rows hidden, a plain-English checklist above the prompt"
+    },
+    {
+      "name": "mods-panel",
+      "source": "./mods-panel",
+      "description": "A side pane listing your mods with an on/off switch each"
+    },
+    {
+      "name": "theme-panel",
+      "source": "./theme-panel",
+      "description": "A side pane listing Claude Code's themes; press one to switch"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "skills-panel",
+  "version": "0.1.0",
+  "description": "A side pane listing the skills this session has, grouped by source, with a live filter. /skills-panel opens it; press a skill to put it in the prompt.",
+  "types": "./types/index.d.ts"
+}

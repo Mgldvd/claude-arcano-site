@@ -1,0 +1,6 @@
+{
+  "name": "model-switch",
+  "version": "0.1.0",
+  "description": "Two buttons at the bottom right of the prompt: one click cycles the model, another the effort.",
+  "types": "./types/index.d.ts"
+}
