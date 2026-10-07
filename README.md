@@ -8,8 +8,8 @@ Claude Code mods and agent skills, and the site that publishes them at https://c
 | `skills/` | Agent skills, one folder with a `SKILL.md` each (see `skills/CLAUDE.md`)       |
 | `site/`   | The Nuxt site: lists, a code view of every file, archives and the agent guide |
 
-A push to `main` rebuilds the site from these folders and publishes it, so a changed mod or skill
-shows on the site (and in its downloads) a minute later.
+The site is built from these folders and published from a local clone with `task deploy`
+(see [Publish](#publish)); nothing publishes on push.
 
 ## Install
 
@@ -23,9 +23,12 @@ It lists what is available, asks which ones you want, and installs them.
 
 ## Work on the mods and skills
 
+The commands are [Task](https://taskfile.dev) tasks; `task` lists them all.
+
 ```sh
-claude plugin test mods/<mod>          # a mod's tests
-claude plugin validate mods/<mod>      # what the engine would refuse
+task check                       # validate and test every mod
+task mods:test MOD=<mod>         # one mod's tests (mods:validate likewise)
+task mods:install                # copy mods/ into your installed claude-mods, then /reload-plugins
 ```
 
 Third-party skills kept on disk for the agents are listed in `skills/.gitignore`: they are not
@@ -34,19 +37,23 @@ published here or on the site.
 ## Build the site
 
 ```sh
-cd site
-pnpm install
-pnpm run generate      # mods/ and skills/ → archives, catalog, code view, pages in .output/public
-pnpm run preview       # serve the build as Cloudflare will (wrangler dev)
-pnpm run deploy        # build and publish from your machine
+task setup             # the site's dependencies
+task dev               # serve it with hot reload
+task build             # mods/ and skills/ → archives, catalog, code view, pages in site/.output/public
+task preview           # serve the build as Cloudflare will (wrangler dev)
 ```
 
-## Publish on push
+## Publish
 
-`.github/workflows/deploy.yml` builds on every push and pull request, and publishes pushes to
-`main` with `wrangler deploy`. It needs two repository secrets:
+The site is published from a clone, never from CI:
 
-- `CLOUDFLARE_ACCOUNT_ID`: the Cloudflare account that owns `arcano.site`
-- `CLOUDFLARE_API_TOKEN`: a token made from the **Edit Cloudflare Workers** template
+```sh
+git clone git@github.com:Mgldvd/claude-arcano-site.git
+cd claude-arcano-site
+task deploy
+```
 
-Without the token the workflow still builds, and says it published nothing.
+`task deploy` asks for confirmation, refuses uncommitted or unpushed changes (the site is always
+what GitHub holds), installs the dependencies, validates and tests every mod, builds, and
+publishes with `wrangler deploy`. The first time on a machine, sign in to the Cloudflare account
+that owns `arcano.site`: `cd site && pnpm exec wrangler login`.

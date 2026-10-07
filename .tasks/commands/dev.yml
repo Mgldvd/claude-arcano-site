@@ -1,0 +1,9 @@
+---
+version: '3'
+
+tasks:
+  dev:
+    desc: Serve the site with hot reload, catalog rebuilt from mods/ and skills/.
+    dir: '{{.ROOT_DIR}}/site'
+    cmds:
+      - pnpm run dev

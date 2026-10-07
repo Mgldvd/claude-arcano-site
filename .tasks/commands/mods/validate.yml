@@ -1,0 +1,16 @@
+---
+version: '3'
+
+tasks:
+  mods:validate:
+    desc: Check every mod the way Claude Code will load it, or one with MOD=<name>.
+    dir: '{{.ROOT_DIR}}/mods'
+    vars:
+      MODS:
+        sh: '{{if .MOD}}echo "{{.MOD}}"{{else}}for d in */; do echo "${d%/}"; done{{end}}'
+    preconditions:
+      - sh: '{{if .MOD}}test -d "{{.MOD}}"{{else}}true{{end}}'
+        msg: 'No mod named "{{.MOD}}" in mods/'
+    cmds:
+      - for: {var: MODS}
+        cmd: claude plugin validate "{{.ITEM}}"

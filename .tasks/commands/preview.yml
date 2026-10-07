@@ -1,0 +1,12 @@
+---
+version: '3'
+
+tasks:
+  preview:
+    desc: Serve the last build as Cloudflare will (run build first).
+    dir: '{{.ROOT_DIR}}/site'
+    preconditions:
+      - sh: test -d .output/public
+        msg: 'No build yet: run "task build" first'
+    cmds:
+      - pnpm run preview

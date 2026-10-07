@@ -1,0 +1,9 @@
+---
+version: '3'
+
+tasks:
+  build:
+    desc: Build the static site into site/.output/public, as CI does.
+    dir: '{{.ROOT_DIR}}/site'
+    cmds:
+      - pnpm run generate

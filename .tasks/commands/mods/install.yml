@@ -1,0 +1,8 @@
+---
+version: '3'
+
+tasks:
+  mods:install:
+    desc: Copy the repo's mods into your installed claude-mods marketplace, then /reload-plugins.
+    cmds:
+      - bash "{{.ROOT_DIR}}/.tasks/scripts/install-mods.sh" "{{.ROOT_DIR}}/mods"

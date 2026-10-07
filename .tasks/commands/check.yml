@@ -1,0 +1,9 @@
+---
+version: '3'
+
+tasks:
+  check:
+    desc: Validate and test every mod.
+    cmds:
+      - task: mods:validate
+      - task: mods:test

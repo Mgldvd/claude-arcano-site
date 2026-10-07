@@ -1,0 +1,12 @@
+---
+version: '3'
+
+tasks:
+  setup:
+    desc: Install the site's dependencies.
+    dir: '{{.ROOT_DIR}}/site'
+    preconditions:
+      - sh: command -v pnpm
+        msg: 'pnpm is not installed: https://pnpm.io/installation'
+    cmds:
+      - pnpm install --frozen-lockfile

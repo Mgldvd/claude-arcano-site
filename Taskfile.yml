@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# https://taskfile.dev
+
+version: '3'
+
+includes:
+  default:
+    taskfile: .tasks/commands/default.yml
+    flatten: true
+
+  setup:
+    taskfile: .tasks/commands/setup.yml
+    flatten: true
+
+  dev:
+    taskfile: .tasks/commands/dev.yml
+    flatten: true
+
+  build:
+    taskfile: .tasks/commands/build.yml
+    flatten: true
+
+  preview:
+    taskfile: .tasks/commands/preview.yml
+    flatten: true
+
+  deploy:
+    taskfile: .tasks/commands/deploy.yml
+    flatten: true
+
+  check:
+    taskfile: .tasks/commands/check.yml
+    flatten: true
+
+  mods-test:
+    taskfile: .tasks/commands/mods/test.yml
+    flatten: true
+
+  mods-validate:
+    taskfile: .tasks/commands/mods/validate.yml
+    flatten: true
+
+  mods-install:
+    taskfile: .tasks/commands/mods/install.yml
+    flatten: true

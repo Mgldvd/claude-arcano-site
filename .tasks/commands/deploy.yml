@@ -1,0 +1,19 @@
+---
+version: '3'
+
+tasks:
+  deploy:
+    desc: Check the mods, build the site and publish it to claude.arcano.site.
+    dir: '{{.ROOT_DIR}}/site'
+    prompt: Publish the site to claude.arcano.site now?
+    preconditions:
+      - sh: test -z "$(git status --porcelain)"
+        msg: 'Uncommitted changes: commit them first, so the site is exactly what the repo holds'
+      - sh: test -z "$(git log '@{u}..HEAD' 2>/dev/null)"
+        msg: 'Unpushed commits: push them first, so the site matches GitHub'
+    cmds:
+      - task: setup
+      - task: check
+      - cmd: pnpm exec wrangler whoami > /dev/null 2>&1 || { echo 'Not logged in to Cloudflare. Run once - cd site && pnpm exec wrangler login'; exit 1; }
+        silent: true
+      - pnpm run deploy
