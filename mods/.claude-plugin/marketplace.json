@@ -7,7 +7,7 @@
     {
       "name": "context-bar",
       "source": "./context-bar",
-      "description": "A band above the prompt with the context window's usage"
+      "description": "A side pane with the context window's usage"
     },
     {
       "name": "skills-panel",

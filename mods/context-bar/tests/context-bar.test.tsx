@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'claude-code/testing'
 
-import { cells, legend, share, toReading, tokens } from '../hooks/register'
+import { cells, share, toReading, tokens } from '../hooks/register'
 
-const BAND = { component: 'AbovePrompt', props: { hasSurvey: false, isWorking: false, maxRows: 20, bodyColumns: 84 } }
+const PANE = { component: 'Pane', requestId: 'context-bar', props: { title: 'Context', isFocused: false, bodyColumns: 40, placement: 'dock', scroll: { offset: 0, bodyRows: 40 }, view: {} } }
 
 // /context's breakdown as the engine hands it over, for a 1M window.
 const BREAKDOWN = {
@@ -34,6 +34,8 @@ const BREAKDOWN = {
 // Stands for the engine beneath the mod.
 function engine(on: any, store: Record<string, unknown> = {}) {
   const asked: unknown[] = []
+  const opened: unknown[] = []
+  const closed: unknown[] = []
   on('session.start', (_$: any, e: any) => ({ sessionId: 's', cwd: e.cwd }))
   on('command.register', () => ({ value: undefined }))
   on('turn.complete', () => ({ text: '' }))
@@ -43,9 +45,12 @@ function engine(on: any, store: Record<string, unknown> = {}) {
     asked.push(e)
     return { value: { startedAt: 0, context: { tokens: 204_000, window: 1_000_000, percent: 20, breakdown: BREAKDOWN }, rateLimits: {}, cost: { usd: 0 } } }
   })
-  on('ui.render', ($: any, e: any) => $.ui.resolve(e).Text({ children: 'band below' }))
-  return { asked, store }
+  on('ui.open', (_$: any, e: any) => (opened.push(e), { value: undefined }))
+  on('ui.close', (_$: any, e: any) => (closed.push(e), { value: undefined }))
+  return { asked, opened, closed, store }
 }
+
+const mount = ($: any) => $.ui.mount({ plugin: 'context-bar', surface: 'terminal', ...PANE } as any)
 
 const settle = () => new Promise(done => (globalThis as any).setTimeout(done, 20)) // the first refresh runs in the background
 
@@ -74,27 +79,24 @@ describe('context-bar', () => {
       expect(bar.reduce((n, c) => n + c.text.length, 0)).toBe(width) // always exactly the width
       expect(bar.filter(c => c.kind === 'used').every(c => c.text.length >= 1)).toBe(true) // a small used slice still shows
     }
-    for (const line of legend(r, 40)) {
-      const size = line.reduce((n, s, i) => n + (i ? 3 : 0) + 2 + s.name.length + 1 + tokens(s.tokens).length + (s.kind === 'used' ? 1 + share(s.tokens, r.window).length : 0), 0)
-      expect(size <= 40 || line.length === 1).toBe(true)
-    }
     expect(toReading({ ...BREAKDOWN, isAutoCompactEnabled: false }).compactsAt).toBeUndefined()
   })
 
-  test('draws the bar and legend above the prompt from a summary breakdown', async ($, on) => {
-    const { asked } = engine(on)
+  test('opens a side pane with the bar and a row per category from a summary breakdown', async ($, on) => {
+    const { asked, opened } = engine(on)
     await $.session.start({ surface: 'terminal', isInteractive: true, cwd: '/work' } as any)
     await settle()
     expect(asked).toEqual([{ breakdown: 'summary' }]) // estimated locally, never the token-count API
+    expect(opened).toEqual([{ id: 'context-bar', title: 'Context', columns: 40 }]) // unasked, so it takes no focus
 
-    const band = await $.ui.mount({ plugin: 'context-bar', surface: 'terminal', ...BAND } as any)
-    expect(await band.find({ type: 'Text', text: /204k of 1M · compacts at 950k/ })).toBeDefined()
-    expect(await band.find({ type: 'Text', text: / 20% / })).toBeDefined()
-    expect(await band.find({ type: 'Text', text: /^messages $/ })).toBeDefined()
-    expect(await band.find({ type: 'Text', text: /^186k$/ })).toBeDefined()
-    expect(await band.find({ type: 'Text', text: /mcp tools \(deferred\)/ })).toBeUndefined()
-    expect(await band.find({ type: 'Text', text: 'band below' })).toBeDefined() // the band beneath stays
-    await band.unmount()
+    const pane = await mount($)
+    expect(await pane.find({ type: 'Text', text: /^204k of 1M$/ })).toBeDefined()
+    expect(await pane.find({ type: 'Text', text: /^compacts at 950k$/ })).toBeDefined()
+    expect(await pane.find({ type: 'Text', text: / 20% / })).toBeDefined()
+    expect(await pane.find({ type: 'Text', text: /^messages$/ })).toBeDefined()
+    expect(await pane.find({ type: 'Text', text: /^186k$/ })).toBeDefined()
+    expect(await pane.find({ type: 'Text', text: /mcp tools \(deferred\)/ })).toBeUndefined()
+    await pane.unmount()
   })
 
   test('refreshes after a main turn, not after a subagent turn', async ($, on) => {
@@ -117,29 +119,23 @@ describe('context-bar', () => {
     expect(asked.length).toBe(2)
   })
 
-  test('/context-bar hides and shows it, and remembers the choice', async ($, on) => {
-    const { store } = engine(on)
+  test('/context-bar closes and opens the pane, and remembers the choice', async ($, on) => {
+    const { opened, closed, store } = engine(on)
     await $.session.start({ surface: 'terminal', isInteractive: true, cwd: '/work' } as any)
     await settle()
-    expect((await $.command.run({ command: 'context-bar', args: '' } as any)).text).toMatch(/hidden/)
-    expect(store.isHidden).toBe(true)
-    let band = await $.ui.mount({ plugin: 'context-bar', surface: 'terminal', ...BAND } as any)
-    expect(await band.find({ type: 'Text', text: /of 1M/ })).toBeUndefined()
-    await band.unmount()
+    expect((await $.command.run({ command: 'context-bar', args: '' } as any)).text).toMatch(/closed/)
+    expect(closed.length).toBe(1)
+    expect(store.isClosedByHand).toBe(true)
 
-    expect((await $.command.run({ command: 'context-bar', args: '' } as any)).text).toBe('Context bar on')
-    expect(store.isHidden).toBe(false)
-    band = await $.ui.mount({ plugin: 'context-bar', surface: 'terminal', ...BAND } as any)
-    expect(await band.find({ type: 'Text', text: /of 1M/ })).toBeDefined()
-    await band.unmount()
+    expect((await $.command.run({ command: 'context-bar', args: '' } as any)).text).toBe('Context pane open')
+    expect(opened.at(-1)).toEqual({ id: 'context-bar', title: 'Context', focus: true, columns: 40 })
+    expect(store.isClosedByHand).toBe(false)
   })
 
-  test('a session that hid it starts hidden', async ($, on) => {
-    engine(on, { isHidden: true })
+  test('closed by hand, it stays closed next session', async ($, on) => {
+    const { opened } = engine(on, { isClosedByHand: true })
     await $.session.start({ surface: 'terminal', isInteractive: true, cwd: '/work' } as any)
     await settle()
-    const band = await $.ui.mount({ plugin: 'context-bar', surface: 'terminal', ...BAND } as any)
-    expect(await band.find({ type: 'Text', text: /of 1M/ })).toBeUndefined()
-    await band.unmount()
+    expect(opened.length).toBe(0)
   })
 })

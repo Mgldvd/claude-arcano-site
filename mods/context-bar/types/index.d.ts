@@ -10,6 +10,6 @@ export type Reading = {
 
 declare module 'claude-code' {
   interface PluginState {
-    'context-bar': { reading: Reading | null; isHidden: boolean }
+    'context-bar': { reading: Reading | null; isOpen: boolean }
   }
 }
