@@ -1,0 +1,24 @@
+{
+  "name": "claude-arcano-site",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "catalog": "node scripts/catalog.mjs",
+    "dev": "node scripts/catalog.mjs && nuxt dev",
+    "build": "node scripts/catalog.mjs && nuxt build",
+    "generate": "node scripts/catalog.mjs && nuxt generate && cp -R .generated/source .output/public/source",
+    "preview": "wrangler dev",
+    "deploy": "pnpm run generate && wrangler deploy",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "highlight.js": "^11.12.0",
+    "nuxt": "^4.6.0",
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1"
+  },
+  "devDependencies": {
+    "sass-embedded": "^1.105.1",
+    "wrangler": "^4.148.0"
+  }
+}

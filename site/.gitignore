@@ -1,0 +1,32 @@
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+.wrangler
+
+# Written by scripts/catalog.mjs on every build
+.generated
+public/downloads
+public/catalog.json
+public/install.md
+public/llms.txt
+app/data/site.json
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.idea
+
+# Local env files
+.env
+.env.*
+!.env.example
