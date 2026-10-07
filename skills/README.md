@@ -24,6 +24,7 @@ Index of every skill available in this folder, with a classification tag and the
 | linux-mint-engineer                    | linux-mint-engineer                    | `sysadmin`         | Standalone                                     |
 | memory-adr                             | memory-adr                             | `documentation`    | G. Documentation & Memory                      |
 | openai-docs                            | openai-docs                            | `openai`           | H. OpenAI Ecosystem                            |
+| qt-qml-review                          | qt-qml-review                          | `qt`               | Standalone (third-party: theqtcompanyrnd/agent-skills) |
 
 ⚠️ = overlap/duplicate detected, see the group notes below. ✅ = already merged into one skill.
 

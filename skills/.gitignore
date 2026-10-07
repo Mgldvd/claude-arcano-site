@@ -1,0 +1,9 @@
+# Third-party skills: kept here on disk for the agents, but not published in this repository
+# or on claude.arcano.site.
+agent-extension-plugin-creator/
+agent-extension-skill-creator/
+agent-extension-skill-installer/
+imagegen/
+openai-docs/
+playwright-cli/
+qt-qml-review/
