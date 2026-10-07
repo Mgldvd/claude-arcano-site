@@ -5,7 +5,6 @@ tasks:
   deploy:
     desc: Check the mods, build the site and publish it to claude.arcano.site.
     dir: '{{.ROOT_DIR}}/site'
-    prompt: Publish the site to claude.arcano.site now?
     preconditions:
       - sh: test -z "$(git status --porcelain)"
         msg: 'Uncommitted changes: commit them first, so the site is exactly what the repo holds'

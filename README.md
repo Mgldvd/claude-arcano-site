@@ -53,7 +53,7 @@ cd claude-arcano-site
 task deploy
 ```
 
-`task deploy` asks for confirmation, refuses uncommitted or unpushed changes (the site is always
+`task deploy` refuses uncommitted or unpushed changes (the site is always
 what GitHub holds), installs the dependencies, validates and tests every mod, builds, and
 publishes with `wrangler deploy`. The first time on a machine, sign in to the Cloudflare account
 that owns `arcano.site`: `cd site && pnpm exec wrangler login`.
