@@ -9,7 +9,7 @@ import { atom, read, update } from 'claude-code'
 import type { EngineInterface, On } from 'claude-code'
 
 import type { Checklist, Task } from '../types'
-import { calm, cells, created, elapsed, fit, fromTodos, IDLE, nameWidth, PLACEHOLDERS, planned, progress, title, updated } from './checklist'
+import { calm, cells, columns, created, elapsed, fit, fromTodos, IDLE, PLACEHOLDERS, planned, progress, title, updated } from './checklist'
 
 const PLUGIN = 'clean-view'
 const PLAN_TOOL = `mcp__${PLUGIN}__plan_steps`
@@ -270,7 +270,7 @@ export function registerCleanView(on: On) {
       )
     }
 
-    const width = nameWidth(e.props.bodyColumns)
+    const width = columns(e.props.bodyColumns, c.tasks.map(t => t.name))
     const isWaitingOnYou = c.needsYouReason !== null && (c.phase === 'working' || c.phase === 'waiting')
     const firstUpcoming = c.tasks.findIndex(t => t.status === 'upcoming')
     const took = elapsed((c.finishedAt ?? now) - c.startedAt)
@@ -327,10 +327,10 @@ export function registerCleanView(on: On) {
                 {`${icon(t, isWaitingOnYou)} `}
               </Text>
               <Text bold={t.status === 'active'} dimColor={t.status !== 'active'}>
-                {fit(t.name, width)}
+                {fit(t.name, width.name)}
               </Text>
               <Text>{'  '}</Text>
-              {cells(t, frame).map((cell, k) =>
+              {cells(t, frame, width.meter).map((cell, k) =>
                 cell.background ? (
                   <Text key={`cell:${k}`} color={cell.color} backgroundColor={cell.background}>
                     {cell.char}

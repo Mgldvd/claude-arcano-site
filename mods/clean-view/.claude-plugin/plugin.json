@@ -1,6 +1,6 @@
 {
   "name": "clean-view",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A calm view for non-technical people: tool calls, diffs and command output are hidden, and a plain-English checklist above the prompt shows the plan, the current step and how far along it is. /simple on|off.",
   "types": "./types/index.d.ts"
 }

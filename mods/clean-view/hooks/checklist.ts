@@ -3,7 +3,8 @@
 import type { Checklist, Task } from '../types'
 
 export const MAX_NAME = 40
-export const METER = 10 // cells, always
+export const METER = 10 // the fewest cells a bar gets; it widens to fill the row
+const LABEL = 7 // the widest label after a bar: "Working", "Up next"
 const CODE_EXTENSIONS =
   'tsx?|jsx?|mjs|cjs|py|rb|rs|go|java|kt|swift|c|h|cc|cpp|hpp|cs|php|lua|dart|scala|sh|bash|zsh|ps1|sql|json|jsonc|ya?ml|toml|ini|env|lock|xml|html?|css|scss|sass|less|vue|svelte|qml|md|mdx|txt|csv|ipynb|gradle|dockerfile'
 const FILE_NAME = new RegExp(`^[\\w.@-]*\\.(${CODE_EXTENSIONS})[),.;:!?]*$`, 'i')
@@ -138,26 +139,23 @@ export const EMPTY = '░'
 
 export type Cell = { char: string; color?: string; background?: string }
 
-// Ten cells: full when done, filled to the percent, a sweep while no percent came yet.
-export function cells(t: Task, frame: number): Cell[] {
-  const filled = (i: number): Cell => ({ char: FILLED, color: blend(STRIPE, i / (METER - 1)), background: blend(BASE, i / (METER - 1)) })
+// `width` cells: full when done, filled to the percent, a sweep while no percent came yet.
+export function cells(t: Task, frame: number, width = METER): Cell[] {
+  const at = (i: number) => (width > 1 ? i / (width - 1) : 0)
+  const filled = (i: number): Cell => ({ char: FILLED, color: blend(STRIPE, at(i)), background: blend(BASE, at(i)) })
   const empty: Cell = { char: EMPTY }
   if (t.status === 'done')
-    return Array.from({ length: METER }, (_, i) => ({ char: FILLED, color: blend(DONE_STRIPE, i / (METER - 1)), background: blend(DONE_BASE, i / (METER - 1)) }))
-  if (t.status === 'upcoming') return Array.from({ length: METER }, () => empty)
+    return Array.from({ length: width }, (_, i) => ({ char: FILLED, color: blend(DONE_STRIPE, at(i)), background: blend(DONE_BASE, at(i)) }))
+  if (t.status === 'upcoming') return Array.from({ length: width }, () => empty)
   if (!t.hasReported) {
-    const span = 3
-    const at = frame % (METER + span) // the sweep enters on the left and leaves on the right
-    return Array.from({ length: METER }, (_, i) => (i >= at - span && i < at ? filled(i) : empty))
+    // The sweep covers about a third of the bar and crosses any bar in the same time as a ten-cell one.
+    const span = Math.max(3, Math.round(width * 0.3))
+    const step = Math.max(1, Math.round(width / METER))
+    const head = (frame * step) % (width + span) // the sweep enters on the left and leaves on the right
+    return Array.from({ length: width }, (_, i) => (i >= head - span && i < head ? filled(i) : empty))
   }
-  const full = Math.round(clamp(t.percent) / 10)
-  return Array.from({ length: METER }, (_, i) => (i < full ? filled(i) : empty))
-}
-
-export function meter(t: Task, frame: number): string {
-  return cells(t, frame)
-    .map(c => c.char)
-    .join('')
+  const full = Math.round((clamp(t.percent) / 100) * width)
+  return Array.from({ length: width }, (_, i) => (i < full ? filled(i) : empty))
 }
 
 // The color at a point (0 to 1) along a gradient of evenly spaced stops.
@@ -181,9 +179,13 @@ export function elapsed(ms: number) {
   return `${Math.floor(m / 60)}h ${m % 60}m`
 }
 
-// The column a name gets: what the row has left after the icon, the meter and its label.
-export function nameWidth(bodyColumns: number) {
-  return Math.max(8, Math.min(MAX_NAME, bodyColumns - (2 + 1 + METER + 2 + 8)))
+// A row's columns: the names as wide as the longest one, the bar every cell left after the
+// icon, the names and the label. A narrow row shortens the names before the bar.
+export function columns(bodyColumns: number, names: string[]) {
+  const fixed = 2 + 2 + 2 + LABEL + 1 // icon, the gaps around the bar, its label, a spare cell
+  const longest = Math.min(MAX_NAME, Math.max(8, ...names.map(n => n.length)))
+  const name = Math.max(8, Math.min(longest, bodyColumns - fixed - METER))
+  return { name, meter: Math.max(METER, bodyColumns - fixed - name) }
 }
 
 export function fit(text: string, width: number) {

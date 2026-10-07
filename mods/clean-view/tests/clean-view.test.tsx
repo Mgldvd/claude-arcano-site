@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'claude-code/testing'
 
-import { blend, cells, clean, progress, planned } from '../hooks/checklist'
+import { blend, cells, clean, columns, progress, planned } from '../hooks/checklist'
 
 const PLAN = 'mcp__clean-view__plan_steps'
 const PROGRESS = 'mcp__clean-view__report_progress'
@@ -82,6 +82,19 @@ describe('clean-view', () => {
     expect(cells(task('upcoming', 0), 0).every(c => !c.background)).toBe(true)
     expect(cells(task('active', 0, false), 4).filter(c => c.background).length).toBe(3) // the sweep
     expect(blend(['#000000', '#ffffff'], 0.5)).toBe('#808080')
+    expect(cells(task('active', 50), 0, 40).filter(c => c.background).length).toBe(20) // a wider bar fills by the same share
+    expect(cells(task('done', 100), 0, 40)[39]).toEqual(done[9]) // and spans the whole gradient
+  })
+
+  test('the bars take the space the row has left, never under ten cells', () => {
+    const names = ['Read your brand notes', 'Build the pricing section']
+    expect(columns(80, names)).toEqual({ name: 25, meter: 41 })
+    expect(columns(160, names)).toEqual({ name: 25, meter: 121 })
+    expect(columns(40, names)).toEqual({ name: 16, meter: 10 }) // narrow: the names shorten first
+    for (const cols of [40, 80, 160]) {
+      const w = columns(cols, names)
+      expect(2 + w.name + 2 + w.meter + 2 + 7).toBeLessThan(cols) // the row never wraps
+    }
   })
 
   test('2. a to-do list and a 60% report draw ✓ / ▶ 60% / Next / Up next, terminal and desktop', async ($, on) => {
@@ -93,9 +106,10 @@ describe('clean-view', () => {
       const ui = await mountBand($, surface)
       const all = await texts(ui)
       const row = (name: string) => all.find((t: string) => t.includes(name) && /(Done|%|Next|Up next|Working)$/.test(t))
-      expect(row('Read your brand notes')).toMatch(/^✓ .*╱{10} {2}Done$/)
-      expect(row('Build the pricing section')).toMatch(/^▶ .*╱{6}░{4} {2}60%$/)
-      expect(row('Add the contact form')).toMatch(/^○ .*░░░░░░░░░░ {2}Next$/)
+      // 80 columns, the longest name 25: the bars take the 41 cells left.
+      expect(row('Read your brand notes')).toMatch(/^✓ .*[^╱]╱{41} {2}Done$/)
+      expect(row('Build the pricing section')).toMatch(/^▶ .*[^╱]╱{25}░{16} {2}60%$/)
+      expect(row('Add the contact form')).toMatch(/^○ .*[^░]░{41} {2}Next$/)
       expect(row('Polish the footer')).toMatch(/Up next$/)
       expect(all.some((t: string) => /Build my landing page · \d+s/.test(t))).toBe(true) // Haiku's name for it
       expect(await ui.find({ type: 'Button', key: 'clean-view', text: '● Clean View: ON' })).toBeDefined()
