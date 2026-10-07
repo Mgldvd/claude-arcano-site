@@ -14,11 +14,11 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = dirname(fileURLToPath(import.meta.url))
-const HOME = process.env.HOME ?? ''
 const SITE = (process.env.SITE_URL ?? 'https://claude.arcano.site').replace(/\/$/, '')
 const HOST = SITE.replace(/^https?:\/\//, '')
-const MODS_DIR = process.env.MODS_DIR ?? join(HOME, 'Downloads', 'Claude-Mods')
-const SKILLS_DIR = process.env.SKILLS_DIR ?? join(HOME, 'Skills')
+const REPO = join(ROOT, '..', '..') // the repository: site/, mods/, skills/
+const MODS_DIR = process.env.MODS_DIR ?? join(REPO, 'mods')
+const SKILLS_DIR = process.env.SKILLS_DIR ?? join(REPO, 'skills')
 const PUBLIC = join(ROOT, '..', 'public')
 const DATA = join(ROOT, '..', 'app', 'data', 'site.json')
 const GENERATED = ['downloads', 'source', 'catalog.json', 'install.md', 'llms.txt'] // in public/, rewritten on each run
@@ -97,9 +97,21 @@ function readMods() {
   })
 }
 
+// A folder git ignores (skills/.gitignore lists the third-party skills kept on disk) is not
+// published; outside a git checkout nothing is ignored.
+function isIgnored(dir, name) {
+  try {
+    execFileSync('git', ['-C', dir, 'check-ignore', '-q', `${name}/`], { stdio: 'ignore' })
+    return true
+  } catch {
+    return false
+  }
+}
+
 function readSkills() {
   return readdirSync(SKILLS_DIR, { withFileTypes: true })
     .filter(d => (d.isDirectory() || d.isSymbolicLink()) && !d.name.startsWith('.') && existsSync(join(SKILLS_DIR, d.name, 'SKILL.md')))
+    .filter(d => !isIgnored(SKILLS_DIR, d.name))
     .map(d => {
       const folder = join(SKILLS_DIR, d.name)
       const fields = frontmatter(readFileSync(join(folder, 'SKILL.md'), 'utf8'))

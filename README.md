@@ -1,42 +1,52 @@
 # claude.arcano.site
 
-Nuxt 4 static site that hosts the Claude Code mods and agent skills, with a guide that lets an AI agent install them after asking the person. Served by a Cloudflare Worker as static assets at https://claude.arcano.site.
+Claude Code mods and agent skills, and the site that publishes them at https://claude.arcano.site.
 
-## Develop
+| Folder    | What it holds                                                                 |
+| --------- | ----------------------------------------------------------------------------- |
+| `mods/`   | Claude Code plugins built on hooks, with their `claude-mods` marketplace       |
+| `skills/` | Agent skills, one folder with a `SKILL.md` each (see `skills/CLAUDE.md`)       |
+| `site/`   | The Nuxt site: lists, a code view of every file, archives and the agent guide |
+
+A push to `main` rebuilds the site from these folders and publishes it, so a changed mod or skill
+shows on the site (and in its downloads) a minute later.
+
+## Install
+
+Give your agent this prompt:
+
+```text
+Read https://claude.arcano.site and follow its instructions for AI agents to install the mods and skills.
+```
+
+It lists what is available, asks which ones you want, and installs them.
+
+## Work on the mods and skills
 
 ```sh
+claude plugin test mods/<mod>          # a mod's tests
+claude plugin validate mods/<mod>      # what the engine would refuse
+```
+
+Third-party skills kept on disk for the agents are listed in `skills/.gitignore`: they are not
+published here or on the site.
+
+## Build the site
+
+```sh
+cd site
 pnpm install
-pnpm dev                  # catalog, then nuxt dev
+pnpm run generate      # mods/ and skills/ → archives, catalog, code view, pages in .output/public
+pnpm run preview       # serve the build as Cloudflare will (wrangler dev)
+pnpm run deploy        # build and publish from your machine
 ```
 
-## Build and deploy
+## Publish on push
 
-```sh
-pnpm generate             # catalog, then nuxt generate → .output/public
-pnpm preview              # wrangler dev: serves .output/public as Cloudflare will
-pnpm deploy               # generate, then wrangler deploy (custom domain claude.arcano.site)
-```
+`.github/workflows/deploy.yml` builds on every push and pull request, and publishes pushes to
+`main` with `wrangler deploy`. It needs two repository secrets:
 
-`scripts/catalog.mjs` runs before every build. It reads the sources and writes the generated, git-ignored files:
+- `CLOUDFLARE_ACCOUNT_ID`: the Cloudflare account that owns `arcano.site`
+- `CLOUDFLARE_API_TOKEN`: a token made from the **Edit Cloudflare Workers** template
 
-- `public/downloads/claude-mods.tar.gz`: the mods as a local marketplace
-- `public/downloads/skills/<name>.tar.gz`, `public/downloads/skills-all.tar.gz`: the skills
-- `public/catalog.json`: every mod and skill with its archive URL and sha256
-- `public/install.md`, `public/llms.txt`: the agent guide as plain text
-- `app/data/site.json`: what the pages draw
-
-Sources (override with env vars):
-
-| Variable     | Default                       |
-| ------------ | ----------------------------- |
-| `MODS_DIR`   | `~/Downloads/Claude-Mods`     |
-| `SKILLS_DIR` | `~/Skills`                    |
-| `SITE_URL`   | `https://claude.arcano.site`  |
-
-## Layout
-
-- `app/pages/`: `/`, `/mods`, `/skills`
-- `app/components/`: the blueprint pieces (`BpFrame`, `DimLine`, `CopyCommand`, cards, `AgentGuide`)
-- `app/assets/scss/main.scss`: tokens, the grid paper and page layout
-- `public/_headers`: content types and CORS for the agent files
-- `wrangler.jsonc`: the Worker, its assets folder and the custom domain
+Without the token the workflow still builds, and says it published nothing.
