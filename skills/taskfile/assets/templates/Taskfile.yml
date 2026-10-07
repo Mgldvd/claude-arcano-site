@@ -1,0 +1,10 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# https://taskfile.dev
+
+version: '3'
+
+includes:
+  default:
+    taskfile: .tasks/commands/default.yml
+    flatten: true

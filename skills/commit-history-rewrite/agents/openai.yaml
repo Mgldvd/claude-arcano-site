@@ -1,0 +1,4 @@
+interface:
+  display_name: "commit-history-rewrite"
+  short_description: "Rewrite a repo's commit history to Conventional Commits, opt-in"
+  default_prompt: "Use $commit-history-rewrite to rewrite commit messages across this repository's reachable history to Conventional Commits 1.0.0, with optional .memory Memory-Ref/Decision-Ref trailers. Always show me a full preview and require a backup before any mutation, keep it a local-only rewrite unless I explicitly ask to push, and never add AI/agent attribution to any rewritten message."

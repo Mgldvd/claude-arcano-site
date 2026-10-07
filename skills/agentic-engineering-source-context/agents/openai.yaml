@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agentic Engineering Source Context"
+  short_description: "Ground integrations in version-matched source"
+  default_prompt: "Use $agentic-engineering-source-context to verify this integration against the exact dependency source and version used by the project."

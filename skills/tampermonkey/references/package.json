@@ -1,0 +1,9 @@
+{
+  "name": "tampermonkey-skill-verify",
+  "private": true,
+  "description": "Dev-only dependency for verify-in-jsdom.mjs; not part of any produced userscript.",
+  "type": "module",
+  "devDependencies": {
+    "jsdom": "24.1.3"
+  }
+}

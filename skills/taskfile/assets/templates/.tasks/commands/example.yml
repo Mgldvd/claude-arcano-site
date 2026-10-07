@@ -1,0 +1,9 @@
+---
+# Copy, rename, and rewrite this file. Never include the example as-is.
+version: '3'
+
+tasks:
+  example:
+    desc: Replace with one real project command.
+    cmds:
+      - echo "Replace this example command"

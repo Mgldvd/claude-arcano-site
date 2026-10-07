@@ -1,0 +1,4 @@
+interface:
+  display_name: "Taskfile Automation"
+  short_description: "Create and maintain safe Taskfile workflows"
+  default_prompt: "Use $taskfile to create or update this project's Taskfile automation while preserving existing commands."

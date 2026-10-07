@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tampermonkey Userscripts"
+  short_description: "Create and harden reliable browser userscripts"
+  default_prompt: "Use $tampermonkey to create, review, or debug this userscript with safe metadata and lifecycle handling."

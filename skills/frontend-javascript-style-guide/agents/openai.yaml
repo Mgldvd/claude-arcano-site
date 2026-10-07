@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend JavaScript Style Guide"
+  short_description: "Consistent browser JavaScript based on Airbnb"
+  default_prompt: "Use $frontend-javascript-style-guide to review and normalize this browser JavaScript."

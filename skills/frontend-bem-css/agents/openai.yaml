@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend BEM CSS"
+  short_description: "Scalable BEM class architecture for frontend UI"
+  default_prompt: "Use $frontend-bem-css to refactor this component into coherent BEM classes."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Vue Style Guide"
+  short_description: "Consistent, maintainable Vue component conventions"
+  default_prompt: "Use $frontend-vue-style-guide to review and normalize these Vue components."

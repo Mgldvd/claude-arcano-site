@@ -1,0 +1,6 @@
+[tools]
+node = "22.22.1"
+
+[tasks.setup]
+description = "Build and validate the self-contained userscript"
+run = "node scripts/build.mjs"

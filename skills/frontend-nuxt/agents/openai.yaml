@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Nuxt 4"
+  short_description: "Build maintainable Nuxt 4 frontend applications"
+  default_prompt: "Use $frontend-nuxt to create or review this Nuxt 4 frontend application."

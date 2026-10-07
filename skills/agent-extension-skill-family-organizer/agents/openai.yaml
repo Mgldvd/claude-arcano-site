@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill Family Organizer"
+  short_description: "Group related skills into consistent families"
+  default_prompt: "Use $agent-extension-skill-family-organizer to group related project skills under consistent logical prefixes."
